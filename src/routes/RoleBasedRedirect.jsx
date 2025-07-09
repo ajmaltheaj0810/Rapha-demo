@@ -9,6 +9,11 @@ const RoleBasedRedirect = () => {
     return <Navigate to="/login" replace />;
   }
   
+  // If user hasn't completed registration, redirect to personal info
+  if (user.isRegistrationComplete === false) {
+    return <Navigate to="/personal-info" replace />;
+  }
+  
   if (user.role === 'patient') {
     return <Navigate to="/patient-dashboard" replace />;
   } else if (user.role === 'physiotherapist') {

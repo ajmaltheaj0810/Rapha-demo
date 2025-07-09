@@ -74,8 +74,12 @@ const RegisterForm = () => {
       return;
     }
     
-    // Set user data in context for the personal info form
-    login({ email: formData.email, role: formData.role });
+    // Set user data in context with complete registration info
+    login({ 
+      email: formData.email, 
+      role: formData.role,
+      isRegistrationComplete: false // Flag to indicate registration is not complete
+    });
     
     // Navigate to personal information form
     navigate('/personal-info');

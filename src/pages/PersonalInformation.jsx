@@ -139,9 +139,18 @@ const PersonalInformation = () => {
       return;
     }
     
-    // Simulate form submission and redirect to appropriate dashboard
+    // Complete the registration process
     console.log('Personal information submitted:', formData);
     
+    // Update user context to mark registration as complete
+    const { login } = useAuth();
+    login({ 
+      ...user, 
+      isRegistrationComplete: true,
+      personalInfo: formData 
+    });
+    
+    // Redirect based on user role
     if (user?.role === 'patient') {
       navigate('/patient-dashboard');
     } else if (user?.role === 'physiotherapist') {
