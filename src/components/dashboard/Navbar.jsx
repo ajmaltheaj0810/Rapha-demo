@@ -14,7 +14,11 @@ import {
   Phone,
   Mail,
   Shield,
-  X
+  X,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Info
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -55,28 +59,57 @@ const Navbar = () => {
     }
   ];
 
-  // Mock notifications data
+  // Enhanced notifications data matching the screenshot design
   const notifications = [
     {
       id: 1,
-      title: 'Appointment Reminder',
-      message: 'You have an appointment tomorrow at 10:00 AM',
+      type: 'appointment',
+      icon: Clock,
+      title: 'Upcoming Appointment',
+      message: 'You have an appointment with Dr. Afnan tomorrow at 10:00 AM',
       time: '2 hours ago',
-      unread: true
+      unread: true,
+      color: 'blue'
     },
     {
       id: 2,
+      type: 'success',
+      icon: CheckCircle,
       title: 'Exercise Completed',
       message: 'Great job! You completed all exercises for today',
       time: '4 hours ago',
-      unread: true
+      unread: true,
+      color: 'green'
     },
     {
       id: 3,
+      type: 'reminder',
+      icon: Bell,
+      title: 'Medication Reminder',
+      message: 'Time to take your prescribed medication',
+      time: '6 hours ago',
+      unread: false,
+      color: 'yellow'
+    },
+    {
+      id: 4,
+      type: 'info',
+      icon: Info,
       title: 'Treatment Plan Updated',
       message: 'Your physiotherapist has updated your treatment plan',
       time: '1 day ago',
-      unread: false
+      unread: false,
+      color: 'blue'
+    },
+    {
+      id: 5,
+      type: 'alert',
+      icon: AlertCircle,
+      title: 'Missed Session',
+      message: 'You missed your scheduled session yesterday',
+      time: '2 days ago',
+      unread: false,
+      color: 'red'
     }
   ];
 
@@ -107,6 +140,16 @@ const Navbar = () => {
     };
   }, []);
 
+  const getNotificationColors = (color) => {
+    switch (color) {
+      case 'blue': return 'bg-blue-100 text-blue-600';
+      case 'green': return 'bg-green-100 text-green-600';
+      case 'yellow': return 'bg-yellow-100 text-yellow-600';
+      case 'red': return 'bg-red-100 text-red-600';
+      default: return 'bg-gray-100 text-gray-600';
+    }
+  };
+
   const NotificationsDropdown = () => (
     <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-lg z-50 animate-slideDown">
       {/* Header */}
@@ -122,58 +165,42 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* User Info Section */}
-      <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-            <User className="h-6 w-6 text-white" />
-          </div>
-          <div className="flex-1">
-            <h4 className="font-semibold text-gray-900 capitalize">{userData.name}</h4>
-            <div className="flex items-center gap-1 text-sm text-gray-600">
-              <Mail className="h-3 w-3" />
-              <span>{userData.email}</span>
-            </div>
-            <div className="flex items-center gap-4 mt-1">
-              <div className="flex items-center gap-1 text-sm text-gray-600">
-                <Shield className="h-3 w-3" />
-                <span className="capitalize">{userData.role}</span>
-              </div>
-              <div className="flex items-center gap-1 text-sm text-gray-600">
-                <Phone className="h-3 w-3" />
-                <span>{userData.phone}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Notifications List */}
-      <div className="max-h-64 overflow-y-auto">
+      <div className="max-h-96 overflow-y-auto">
         {notifications.length > 0 ? (
-          notifications.map((notification) => (
-            <div
-              key={notification.id}
-              className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer ${
-                notification.unread ? 'bg-blue-50/50' : ''
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <div className={`w-2 h-2 rounded-full mt-2 ${
-                  notification.unread ? 'bg-blue-500' : 'bg-gray-300'
-                }`} />
-                <div className="flex-1">
-                  <h5 className={`font-medium text-sm ${
-                    notification.unread ? 'text-gray-900' : 'text-gray-700'
+          notifications.map((notification) => {
+            const Icon = notification.icon;
+            return (
+              <div
+                key={notification.id}
+                className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer ${
+                  notification.unread ? 'bg-blue-50/30' : ''
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    getNotificationColors(notification.color)
                   }`}>
-                    {notification.title}
-                  </h5>
-                  <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
-                  <span className="text-xs text-gray-500 mt-2 block">{notification.time}</span>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <h4 className={`font-semibold text-sm ${
+                        notification.unread ? 'text-gray-900' : 'text-gray-700'
+                      }`}>
+                        {notification.title}
+                        {notification.unread && (
+                          <span className="ml-2 w-2 h-2 bg-blue-500 rounded-full inline-block"></span>
+                        )}
+                      </h4>
+                      <span className="text-xs text-gray-500 flex-shrink-0">{notification.time}</span>
+                    </div>
+                    <p className="text-sm text-gray-600 leading-relaxed">{notification.message}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <div className="p-8 text-center">
             <Bell className="h-8 w-8 text-gray-300 mx-auto mb-2" />
@@ -212,17 +239,14 @@ const Navbar = () => {
 
       {/* Menu Items */}
       <div className="py-2">
-        <button
-          onClick={() => {
-            setIsProfileOpen(false);
-            // Navigate to profile page (you can implement this)
-            console.log('Navigate to profile');
-          }}
+        <Link
+          to="/profile"
+          onClick={() => setIsProfileOpen(false)}
           className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
         >
           <UserCircle className="h-4 w-4" />
           View Profile
-        </button>
+        </Link>
         
         <button
           onClick={() => {
