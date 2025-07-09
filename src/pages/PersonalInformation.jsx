@@ -13,7 +13,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const PersonalInformation = () => {
-  const { user } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
@@ -143,7 +143,6 @@ const PersonalInformation = () => {
     console.log('Personal information submitted:', formData);
     
     // Update user context to mark registration as complete
-    const { login } = useAuth();
     login({ 
       ...user, 
       isRegistrationComplete: true,
